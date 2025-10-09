@@ -33,4 +33,12 @@ router.get('/:userId/masjids', ctrl.getMasjidsByUser);
 router.post('/set-active-masjid', ctrl.setActiveMasjid);
 router.get('/user-meta/:id/status', ctrl.getMasjidStatus);
 router.delete('/user-meta/:id', ctrl.deleteUserMeta);
+router.post(
+  '/update-fcm',
+  [
+    body('user_id').isInt().withMessage('User ID must be an integer'),
+    body('fcm_token').notEmpty().withMessage('FCM token is required')
+  ],
+  ctrl.updateFcmToken
+)
 module.exports = router;

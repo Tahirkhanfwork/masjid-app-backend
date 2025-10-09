@@ -137,3 +137,30 @@ exports.deleteUserMeta = async (req, res) => {
     return res.status(500).json({ message: 'Internal server error' });
   }
 };
+exports.updateFcmToken = async (req, res) => {
+  try {
+    const { user_id, fcm_token } = req.body;
+
+    if (!user_id || !fcm_token) {
+      return res.status(400).json({ message: 'user_id and fcm_token are required' });
+    }
+
+    const user = await User.findById(user_id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const result = await User.updateFcmToken(user_id, fcm_token);
+    if (result.affectedRows === 0) {
+      return res.status(400).json({ message: 'Failed to update FCM token' });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: 'FCM token updated successfully',
+    });
+  } catch (error) {
+    console.error('Error updating FCM token:', error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+};

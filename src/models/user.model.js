@@ -79,6 +79,12 @@ async function findUserMetaByUserAndMasjid(userId, masjidId) {
   );
   return rows.length > 0 ? rows[0] : null;
 }
+
+async function updateFcmToken(user_id, fcm_token) {
+  const query = 'UPDATE users SET fcm_token = ? WHERE user_id = ?';
+  const [result] = await db.execute(query, [fcm_token, user_id]);
+  return result;
+}
 module.exports = {
   createUser,
   findById,
@@ -90,5 +96,6 @@ module.exports = {
   setActiveMasjid,
   getUserMetaStatusById,
   deleteUserMetaById,
-  findUserMetaByUserAndMasjid
+  findUserMetaByUserAndMasjid,
+  updateFcmToken
 };
