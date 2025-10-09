@@ -52,11 +52,10 @@ async function findMasjidsByUserId(userId) {
   return rows;
 }
 async function setActiveMasjid(userMetaId, status) {
-  const oppositeStatus = status === 'active' ? 'inactive' : 'active';
-
-  const [[userMetaRow]] = await db.query(`SELECT user_id FROM user_meta WHERE id = ?`, [
-    userMetaId
-  ]);
+  const [[userMetaRow]] = await db.query(
+    `SELECT user_id FROM user_meta WHERE id = ?`,
+    [userMetaId]
+  );
 
   if (!userMetaRow) {
     throw new Error('UserMeta not found');
@@ -71,12 +70,14 @@ async function setActiveMasjid(userMetaId, status) {
     [status, userMetaId]
   );
 
-  await db.query(
-    `UPDATE user_meta
-     SET status = ?, updated_at = NOW()
-     WHERE user_id = ? AND id != ?`,
-    [oppositeStatus, userId, userMetaId]
-  );
+  if (status === 'active') {
+    await db.query(
+      `UPDATE user_meta
+       SET status = 'inactive', updated_at = NOW()
+       WHERE user_id = ? AND id != ?`,
+      [userId, userMetaId]
+    );
+  }
 
   return { success: true };
 }
