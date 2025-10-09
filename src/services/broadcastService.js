@@ -30,7 +30,7 @@ async function notifyListeners(masjidId, payload) {
       SELECT u.fcm_token
       FROM user_meta um
       JOIN users u ON um.user_id = u.user_id
-      WHERE um.masjid_id = ? AND u.fcm_token IS NOT NULL
+      WHERE um.masjid_id = ? AND um.status = 'active' AND u.fcm_token IS NOT NULL
     `, [masjidId]);
 
     const tokens = rows.map((r) => r.fcm_token).filter(Boolean);
